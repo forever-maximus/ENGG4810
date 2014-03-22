@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>ENGG4810 initial test</title>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHTSKMqr_k_Dpg4jir1JJfX0bGMfzSCGs&sensor=false"></script>
+		<script src="jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="googleMapsCode.js"></script>
+		<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+		<style type="text/css">
+			html { height: 100% }
+			body { height: 100%; margin: 0; padding: 0 }
+			#mapCanvas { height: 100%; width: 70%; float: left }
+			#menu { height: 100%; width: 30%; float: right }
+			h1 { margin: 0; font-family: 'Open Sans', sans-serif; padding-bottom: 20px; }
+			p { font-family: 'Open Sans', sans-serif; font-size: 14px; }
+			#content { margin: 20px }
+		</style>
+	</head>
+	
+	<body>
+		<div id="mapCanvas"></div>
+		<div id="menu">
+			<div id="content">
+				<h1>ENGG4810 TP2</h1>
+				<form>
+					Temperature threshold: <input id="tempThreshold" type="text" name="tempThreshold">
+				</form>
+				<input id="generateRoute" type="button" value="Generate Route">
+			</div>
+		</div>
+	</body>
+	
+</html>
