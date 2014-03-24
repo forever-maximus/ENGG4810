@@ -114,56 +114,51 @@ $(function () {
                 continue
             else:
                 IAmTheBatmanJS += """
-        
+        var route%s;
         if (%s < temperatureThreshold) {
-            var route = new google.maps.Polyline({
-                path: [new google.maps.LatLng(%s, %s), new google.maps.LatLng(%s, %s)],
+            route%s = new google.maps.Polyline({
+                path: [],
                 strokeColor: "#00FF00",
                 strokeOpacity: 1.0,
                 strokeWeight: 3
-            });
-
-            var request = {
-                    origin: new google.maps.LatLng(%s, %s),
-                    destination: new google.maps.LatLng(%s, %s),
-                    travelMode: google.maps.TravelMode.DRIVING
-            };
-            
-            directionsService.route(request, function(response, status) {
-                    if (status == google.maps.DirectionsStatus.OK) {
-                    
-                            var path = response.routes[0].overview_path;
-                            
-                            for (var i=0; i<path.length;i++) {
-                                    var point = path[i];
-                                    route.getPath().push(point);
-                            }
-                            
-                    }
-            });
-
-            route.setMap(map);
-            polylineArray.push(route);
-		
+            });	
         } else {
-            var route = new google.maps.Polyline({
-                path: [new google.maps.LatLng(%s, %s), new google.maps.LatLng(%s, %s)],
+            route%s = new google.maps.Polyline({
+                path: [],
                 strokeColor: "#FF0000",
                 strokeOpacity: 1.0,
                 strokeWeight: 3
             });
-            route.setMap(map);
-            polylineArray.push(route);
         }
-""" % (sample['temperature'],
+
+        var request = {
+            origin: new google.maps.LatLng(%s, %s),
+            destination: new google.maps.LatLng(%s, %s),
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+
+        directionsService.route(request, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+        
+                var path = response.routes[0].overview_path;
+                
+                for (var i=0; i<path.length;i++) {
+                    var point = path[i];
+                    route%s.getPath().push(point);
+                }
+                
+            }
+        });
+
+        route%s.setMap(map);
+        polylineArray.push(route%s);
+""" % (counter, sample['temperature'], counter, counter, 
        previous['latitude'], previous['longitude'],
        sample['latitude'], sample['longitude'],
-       previous['latitude'], previous['longitude'],
-       sample['latitude'], sample['longitude'],
-       previous['latitude'], previous['longitude'],
-       sample['latitude'], sample['longitude'])
+       counter, counter, counter)
        
                 previous = sample
+                counter += 1
 
         IAmTheBatmanJS += """
 
