@@ -1,5 +1,33 @@
 # Reads from sensor logger file and generates javascript for google maps
 
+import os
+import paramiko
+
+""" Provides methods for connecting to cloud via SSH and copying selected
+*** sensor Data to local host via SFTP.     
+"""
+class DataRetriever:
+
+    ssh = 0
+
+    def __init__(self):
+        self.ssh = paramiko.SSHClient()
+        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    def connect(self):
+        privateKey = paramiko.RSAKey.from_private_key_file("TP2PrivateOpenSSHKey.ppk")
+        self.ssh.connect(hostname='moss.labs.eait.uq.edu.au', username='s4238289',
+                    pkey=privateKey)
+
+    def testConnection(self):
+        stdin, stdout, stderr = self.ssh.exec_command("pwd")
+        output = stdout.readlines()
+        print output
+
+    def closeConnection(self):
+        self.ssh.close()
+
+
 class SensorDataManager:
 
     sensorValues = []
@@ -11,7 +39,7 @@ class SensorDataManager:
     # which are passed to _processData() function.
     def gatherData(self):
 
-        with open('sensorSamples.txt', 'r') as sensorFile:
+        with open('sensorData/sensorSamples.txt', 'r') as sensorFile:
             
             while True:
                 data = ""
@@ -68,7 +96,7 @@ class JavascriptGenerator:
 
     def generate(self):
 
-        newJsFile = open('googleMapsCode.js', 'w')
+        newJsFile = open('javascript/googleMapsCode.js', 'w')
 
         test = [-27.497687, 153.021066]
 
@@ -92,6 +120,10 @@ function initializeMap() {
 }
 	  
 google.maps.event.addDomListener(window, 'load', initializeMap);
+
+var enableButton = function () {
+    $("#generateRoute").removeAttr("disabled");
+}
 
 $(function () {
 	$("#generateRoute").click(function() {
@@ -162,6 +194,9 @@ $(function () {
 
         IAmTheBatmanJS += """
 
+        $("#generateRoute").attr("disabled", true);
+        setTimeout(function() { enableButton() }, 3000);
+
     });
 });
 """
@@ -171,12 +206,19 @@ $(function () {
 
 def main():
 
+    dataRetriever = DataRetriever()
+    dataRetriever.connect()
+    dataRetriever.testConnection()
+    dataRetriever.closeConnection()
+
     sensorDataReference = SensorDataManager()
     sensorDataReference.gatherData()
     sensorDataReference.displayData()
 
     getItDone = JavascriptGenerator(sensorDataReference.sensorValues)
     getItDone.generate()
+
+    os.startfile('initialMap.html')
     
 
 if __name__ == "__main__":

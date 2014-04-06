@@ -18,3 +18,11 @@ samples:
     - temperature: 28.5
       latitude: -27.504176
       longitude: 153.034167
+
+    - temperature: 27
+      latitude: -27.497315
+      longitude: 153.035109
+
+    - temperature: 28
+      latitude: -27.493915
+      longitude: 153.034445

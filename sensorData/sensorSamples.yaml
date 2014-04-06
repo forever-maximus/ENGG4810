@@ -1,0 +1,28 @@
+samples:
+    - temperature: 27
+      latitude: -27.504328
+      longitude: 153.025498
+
+    - temperature: 27
+      latitude: -27.500369
+      longitude: 153.026485
+
+    - temperature: 27.5
+      latitude: -27.502196
+      longitude: 153.030047
+
+    - temperature: 30
+      latitude: -27.507068
+      longitude: 153.032622
+
+    - temperature: 28.5
+      latitude: -27.504176
+      longitude: 153.034167
+
+    - temperature: 27
+      latitude: -27.497315
+      longitude: 153.035109
+
+    - temperature: 28
+      latitude: -27.493915
+      longitude: 153.034445

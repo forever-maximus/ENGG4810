@@ -19,6 +19,10 @@ function initializeMap() {
 	  
 google.maps.event.addDomListener(window, 'load', initializeMap);
 
+var enableButton = function () {
+    $("#generateRoute").removeAttr("disabled");
+}
+
 $(function () {
 	$("#generateRoute").click(function() {
 
@@ -185,6 +189,87 @@ $(function () {
         route4.setMap(map);
         polylineArray.push(route4);
 
+        var route5;
+        if (27.0 < temperatureThreshold) {
+            route5 = new google.maps.Polyline({
+                path: [],
+                strokeColor: "#00FF00",
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });	
+        } else {
+            route5 = new google.maps.Polyline({
+                path: [],
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+        }
+
+        var request = {
+            origin: new google.maps.LatLng(-27.504176, 153.034167),
+            destination: new google.maps.LatLng(-27.497315, 153.035109),
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+
+        directionsService.route(request, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+        
+                var path = response.routes[0].overview_path;
+                
+                for (var i=0; i<path.length;i++) {
+                    var point = path[i];
+                    route5.getPath().push(point);
+                }
+                
+            }
+        });
+
+        route5.setMap(map);
+        polylineArray.push(route5);
+
+        var route6;
+        if (28.0 < temperatureThreshold) {
+            route6 = new google.maps.Polyline({
+                path: [],
+                strokeColor: "#00FF00",
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });	
+        } else {
+            route6 = new google.maps.Polyline({
+                path: [],
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+        }
+
+        var request = {
+            origin: new google.maps.LatLng(-27.497315, 153.035109),
+            destination: new google.maps.LatLng(-27.493915, 153.034445),
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+
+        directionsService.route(request, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+        
+                var path = response.routes[0].overview_path;
+                
+                for (var i=0; i<path.length;i++) {
+                    var point = path[i];
+                    route6.getPath().push(point);
+                }
+                
+            }
+        });
+
+        route6.setMap(map);
+        polylineArray.push(route6);
+
+
+        $("#generateRoute").attr("disabled", true);
+        setTimeout(function() { enableButton() }, 3000);
 
     });
 });
