@@ -117,6 +117,7 @@ class JavascriptGenerator:
 var map = null;
 var directionsService;
 var polylineArray = [];
+var markerArray = [];
 
 function initializeMap() {
 
@@ -144,9 +145,22 @@ $(function () {
         for (i = 0; i < polylineArray.length; i++) {
             polylineArray[i].setMap(null);
         }
+        for (i = 0; i < markerArray.length; i++) {
+            markerArray[i].setMap(null);
+        }
 
         var temperatureThreshold = document.getElementById("maxThreshold").value;
 	
+""" % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
+
+        IAmTheBatmanJS += """
+
+        var startMarker = new google.maps.Marker({
+            position: new google.maps.LatLng(%s, %s),
+            map: map,
+            title: 'Start'
+        });
+        markerArray.push(startMarker);
 """ % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
 
         counter = 0
@@ -207,12 +221,19 @@ $(function () {
 
         IAmTheBatmanJS += """
 
+        var endMarker = new google.maps.Marker({
+            position: new google.maps.LatLng(%s, %s),
+            map: map,
+            title: 'End'
+        });
+        markerArray.push(endMarker);
+
         $("#generateRoute").attr("disabled", true);
         setTimeout(function() { enableButton() }, 3000);
 
     });
 });
-"""
+""" % (self.sensorValues[len(self.sensorValues)-1]['latitude'], self.sensorValues[len(self.sensorValues)-1]['longitude'])
 
         newJsFile.write(IAmTheBatmanJS)
         newJsFile.close()
