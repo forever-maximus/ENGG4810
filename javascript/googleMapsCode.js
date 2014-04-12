@@ -30,7 +30,7 @@ $(function () {
             polylineArray[i].setMap(null);
         }
 
-        var temperatureThreshold = document.getElementById("tempThreshold").value;
+        var temperatureThreshold = document.getElementById("maxThreshold").value;
 	
 
         var route1;
