@@ -2,6 +2,7 @@
 
 import os
 import paramiko
+import yaml
 
 """ Provides methods for connecting to cloud via SSH and copying selected
 *** sensor Data to local host via SFTP.     
@@ -32,7 +33,9 @@ class DataRetriever:
             self.displayDirectory(output)
             value = raw_input("> ")
             commands = value.split()
-            if (commands[0] == "cd"):
+            if not commands:
+                print "Try using 'cd <directory>' or 'get <filename>'\n"
+            elif (commands[0] == "cd"):
                 if (commands[1] == ".."):
                     self.currentDirectory = "/home/groups/engg4810g/"
                 else:
@@ -76,54 +79,25 @@ class SensorDataManager:
     def __init__(self):
         pass
 
-    # Opens file and reads in each line gathering related segments
-    # which are passed to _processData() function.
+    # Opens data file pulled from cloud server and parses the YAML.
     def gatherData(self):
 
+        unstructuredData = ""
+        
         with open('sensorData/sensorSamples.txt', 'r') as sensorFile:
-            
             while True:
-                data = ""
                 line = sensorFile.readline()
                 if not line:
                     break
-                if line.startswith("sample"):
-                    continue
-                
-                line = line.strip()
-                
-                while line != "":
-                    line = line.strip()
-                    if line.startswith("-"):
-                        line = line.replace("-", "")
-                        line = line.strip()
-                    data += line + "~"
-                    line = sensorFile.readline()
-                    line = line.strip()
-                    
-                self._processData(data)
+                unstructuredData += line
 
-    # Processes gathered data into the sensorValue field such that it
-    # is a list of dictionaries.
-    def _processData(self, data):
-
-        data = data.split('~')
-        tempDict = {}
-        counter = 0
-        
-        for i in data:
-            if (i != ""):
-                temp = data[counter].split(':')
-                temp[1] = float(temp[1])
-                tempDict[temp[0]] = temp[1]
-                counter += 1
-                
-        self.sensorValues.append(tempDict)
+        yamlData = yaml.load(unstructuredData)
+        self.sensorValues = yamlData['samples']
 
     # Generates a nicer display of the gathered data by simply printing
-    # out each dictionary on a new line.
+    # out each dictionary on a new line. Useful for debugging.
     def displayData(self):
-
+        
         for i in self.sensorValues:
             print i
 
@@ -138,8 +112,6 @@ class JavascriptGenerator:
     def generate(self):
 
         newJsFile = open('javascript/googleMapsCode.js', 'w')
-
-        test = [-27.497687, 153.021066]
 
         IAmTheBatmanJS = """
 var map = null;
