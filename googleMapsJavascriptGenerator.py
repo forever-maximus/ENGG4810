@@ -149,7 +149,10 @@ $(function () {
             markerArray[i].setMap(null);
         }
 
-        var temperatureThreshold = document.getElementById("maxThreshold").value;
+        var sensorSelector = document.getElementById("sensorSelector");
+        var currentSensor = sensorSelector.options[sensorSelector.selectedIndex].text;
+        var minThreshold = document.getElementById("minThreshold").value;
+        var maxThreshold = document.getElementById("maxThreshold").value;
 	
 """ % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
 
@@ -174,21 +177,29 @@ $(function () {
             else:
                 IAmTheBatmanJS += """
         var route%s;
-        if (%s < temperatureThreshold) {
-            route%s = new google.maps.Polyline({
-                path: [],
-                strokeColor: "#00FF00",
-                strokeOpacity: 1.0,
-                strokeWeight: 3
-            });	
-        } else {
-            route%s = new google.maps.Polyline({
-                path: [],
-                strokeColor: "#FF0000",
-                strokeOpacity: 1.0,
-                strokeWeight: 3
-            });
+        if (currentSensor == "Temperature") {
+            if (%s > minThreshold && %s < maxThreshold) {
+                route%s = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });	
+            } else {
+                route%s = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            }
+        } else if (currentSensor == "Acceleration") {
+            console.log("Create line based on acceleration threshold");
         }
+""" % (counter, sample['temperature'], sample['temperature'], counter,
+       counter)
+
+                IAmTheBatmanJS += """
 
         var request = {
             origin: new google.maps.LatLng(%s, %s),
@@ -211,8 +222,7 @@ $(function () {
 
         route%s.setMap(map);
         polylineArray.push(route%s);
-""" % (counter, sample['temperature'], counter, counter, 
-       previous['latitude'], previous['longitude'],
+""" % (previous['latitude'], previous['longitude'],
        sample['latitude'], sample['longitude'],
        counter, counter, counter)
        

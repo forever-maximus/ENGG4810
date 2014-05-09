@@ -26,7 +26,13 @@
 			<div id="content">
 				<h1>ENGG4810 TP2</h1>
 				<form>
-					Maximum threshold: <input id="maxThreshold" type="text" name="maxThreshold">
+					Sensor: 
+					<select id="sensorSelector">
+						<option value="temperature">Temperature</option>
+						<option value="acceleration">Acceleration</option>
+					</select><br>
+					<span id="minThresholdContainer">Minimum threshold: <input id="minThreshold" type="text" name="minThreshold"></span>
+					<span id="maxThresholdContainer">Maximum threshold: <input id="maxThreshold" type="text" name="maxThreshold"></span>
 				</form>
 				<input id="generateRoute" type="button" value="Generate Route">
 			</div>

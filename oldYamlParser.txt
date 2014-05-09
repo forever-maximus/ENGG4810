@@ -1,0 +1,43 @@
+# Opens file and reads in each line gathering related segments
+    # which are passed to _processData() function.
+##    def gatherData(self):
+##
+##        with open('sensorData/sensorSamples.txt', 'r') as sensorFile:
+##            
+##            while True:
+##                data = ""
+##                line = sensorFile.readline()
+##                if not line:
+##                    break
+##                if line.startswith("sample"):
+##                    continue
+##                
+##                line = line.strip()
+##                
+##                while line != "":
+##                    line = line.strip()
+##                    if line.startswith("-"):
+##                        line = line.replace("-", "")
+##                        line = line.strip()
+##                    data += line + "~"
+##                    line = sensorFile.readline()
+##                    line = line.strip()
+##                    
+##                self._processData(data)
+
+    # Processes gathered data into the sensorValue field such that it
+    # is a list of dictionaries.
+##    def _processData(self, data):
+##
+##        data = data.split('~')
+##        tempDict = {}
+##        counter = 0
+##        
+##        for i in data:
+##            if (i != ""):
+##                temp = data[counter].split(':')
+##                temp[1] = float(temp[1])
+##                tempDict[temp[0]] = temp[1]
+##                counter += 1
+##                
+##        self.sensorValues.append(tempDict)
