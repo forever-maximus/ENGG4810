@@ -24,6 +24,66 @@ var enableButton = function () {
     $("#generateRoute").removeAttr("disabled");
 }
 
+
+window.onload = function () {
+
+
+    if ('acceleration' != 'temperature' && 'acceleration' != 'acceleration' && 'acceleration' != 'latitude' &&
+            'acceleration' != 'longitude' && 'acceleration' != 'time') {
+        var select = document.getElementById("sensorSelector");
+        var option = document.createElement('option');
+        option.text = option.value = 'acceleration';
+        select.add(option, 0);
+    }
+
+
+    if ('pressure' != 'temperature' && 'pressure' != 'acceleration' && 'pressure' != 'latitude' &&
+            'pressure' != 'longitude' && 'pressure' != 'time') {
+        var select = document.getElementById("sensorSelector");
+        var option = document.createElement('option');
+        option.text = option.value = 'pressure';
+        select.add(option, 0);
+    }
+
+
+    if ('temperature' != 'temperature' && 'temperature' != 'acceleration' && 'temperature' != 'latitude' &&
+            'temperature' != 'longitude' && 'temperature' != 'time') {
+        var select = document.getElementById("sensorSelector");
+        var option = document.createElement('option');
+        option.text = option.value = 'temperature';
+        select.add(option, 0);
+    }
+
+
+    if ('latitude' != 'temperature' && 'latitude' != 'acceleration' && 'latitude' != 'latitude' &&
+            'latitude' != 'longitude' && 'latitude' != 'time') {
+        var select = document.getElementById("sensorSelector");
+        var option = document.createElement('option');
+        option.text = option.value = 'latitude';
+        select.add(option, 0);
+    }
+
+
+    if ('longitude' != 'temperature' && 'longitude' != 'acceleration' && 'longitude' != 'latitude' &&
+            'longitude' != 'longitude' && 'longitude' != 'time') {
+        var select = document.getElementById("sensorSelector");
+        var option = document.createElement('option');
+        option.text = option.value = 'longitude';
+        select.add(option, 0);
+    }
+
+
+    if ('humidity' != 'temperature' && 'humidity' != 'acceleration' && 'humidity' != 'latitude' &&
+            'humidity' != 'longitude' && 'humidity' != 'time') {
+        var select = document.getElementById("sensorSelector");
+        var option = document.createElement('option');
+        option.text = option.value = 'humidity';
+        select.add(option, 0);
+    }
+
+};
+
+
 $(function () {
 	$("#generateRoute").click(function() {
 
@@ -38,6 +98,9 @@ $(function () {
         var currentSensor = sensorSelector.options[sensorSelector.selectedIndex].text;
         var minThreshold = document.getElementById("minThreshold").value;
         var maxThreshold = document.getElementById("maxThreshold").value;
+        var statusDisplay = document.getElementById("routeStatus");
+
+        errorCounter = 0;
 	
 
 
@@ -64,9 +127,27 @@ $(function () {
                     strokeOpacity: 0.8,
                     strokeWeight: 3
                 });
+                errorCounter += 1;
             }
-        } else if (currentSensor == "Acceleration") {
-            console.log("Create line based on acceleration threshold");
+        }
+
+        else if (currentSensor == "Acceleration") {
+            if (1.1 < maxThreshold && 2.1 < maxThreshold && 3.1 < maxThreshold) {
+                route1 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route1 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
         }
 
 
@@ -108,9 +189,27 @@ $(function () {
                     strokeOpacity: 0.8,
                     strokeWeight: 3
                 });
+                errorCounter += 1;
             }
-        } else if (currentSensor == "Acceleration") {
-            console.log("Create line based on acceleration threshold");
+        }
+
+        else if (currentSensor == "Acceleration") {
+            if (0.6 < maxThreshold && 0.7 < maxThreshold && 0.4 < maxThreshold) {
+                route2 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route2 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
         }
 
 
@@ -152,9 +251,27 @@ $(function () {
                     strokeOpacity: 0.8,
                     strokeWeight: 3
                 });
+                errorCounter += 1;
             }
-        } else if (currentSensor == "Acceleration") {
-            console.log("Create line based on acceleration threshold");
+        }
+
+        else if (currentSensor == "Acceleration") {
+            if (0.3 < maxThreshold && 0.2 < maxThreshold && 0.1 < maxThreshold) {
+                route3 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route3 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
         }
 
 
@@ -196,9 +313,27 @@ $(function () {
                     strokeOpacity: 0.8,
                     strokeWeight: 3
                 });
+                errorCounter += 1;
             }
-        } else if (currentSensor == "Acceleration") {
-            console.log("Create line based on acceleration threshold");
+        }
+
+        else if (currentSensor == "Acceleration") {
+            if (1.3 < maxThreshold && 1.0 < maxThreshold && 0.9 < maxThreshold) {
+                route4 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route4 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
         }
 
 
@@ -240,9 +375,27 @@ $(function () {
                     strokeOpacity: 0.8,
                     strokeWeight: 3
                 });
+                errorCounter += 1;
             }
-        } else if (currentSensor == "Acceleration") {
-            console.log("Create line based on acceleration threshold");
+        }
+
+        else if (currentSensor == "Acceleration") {
+            if (2.3 < maxThreshold && 0.1 < maxThreshold && 1.5 < maxThreshold) {
+                route5 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route5 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
         }
 
 
@@ -284,9 +437,27 @@ $(function () {
                     strokeOpacity: 0.8,
                     strokeWeight: 3
                 });
+                errorCounter += 1;
             }
-        } else if (currentSensor == "Acceleration") {
-            console.log("Create line based on acceleration threshold");
+        }
+
+        else if (currentSensor == "Acceleration") {
+            if (1.1 < maxThreshold && 0.8 < maxThreshold && 0.3 < maxThreshold) {
+                route6 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route6 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
         }
 
 
@@ -322,6 +493,12 @@ $(function () {
 
         $("#generateRoute").attr("disabled", true);
         setTimeout(function() { enableButton() }, 3000);
+
+        if (errorCounter > 0) {
+            statusDisplay.innerHTML = "Threshold exceeded - goods compromised!"
+        } else {
+            statusDisplay.innerHTML = "Goods safely transported."
+        }
 
     });
 });

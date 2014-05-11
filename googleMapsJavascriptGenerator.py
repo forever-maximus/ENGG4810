@@ -138,6 +138,29 @@ google.maps.event.addDomListener(window, 'load', initializeMap);
 var enableButton = function () {
     $("#generateRoute").removeAttr("disabled");
 }
+""" % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
+        
+        IAmTheBatmanJS += """
+
+window.onload = function () {
+"""
+        for i in self.sensorValues[0]:
+            
+            IAmTheBatmanJS += """
+
+    if ('%s' != 'temperature' && '%s' != 'acceleration' && '%s' != 'latitude' &&
+            '%s' != 'longitude' && '%s' != 'time') {
+        var select = document.getElementById("sensorSelector");
+        var option = document.createElement('option');
+        option.text = option.value = '%s';
+        select.add(option, 0);
+    }
+""" % (i, i, i, i, i, i)
+        IAmTheBatmanJS += """
+};
+"""
+        print len(self.sensorValues[0])
+        IAmTheBatmanJS += """
 
 $(function () {
 	$("#generateRoute").click(function() {
@@ -153,8 +176,11 @@ $(function () {
         var currentSensor = sensorSelector.options[sensorSelector.selectedIndex].text;
         var minThreshold = document.getElementById("minThreshold").value;
         var maxThreshold = document.getElementById("maxThreshold").value;
+        var statusDisplay = document.getElementById("routeStatus");
+
+        errorCounter = 0;
 	
-""" % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
+"""
 
         IAmTheBatmanJS += """
 
@@ -192,12 +218,33 @@ $(function () {
                     strokeOpacity: 0.8,
                     strokeWeight: 3
                 });
+                errorCounter += 1;
             }
-        } else if (currentSensor == "Acceleration") {
-            console.log("Create line based on acceleration threshold");
         }
 """ % (counter, sample['temperature'], sample['temperature'], counter,
        counter)
+
+                IAmTheBatmanJS += """
+        else if (currentSensor == "Acceleration") {
+            if (%s < maxThreshold && %s < maxThreshold && %s < maxThreshold) {
+                route%s = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route%s = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+""" % (sample['acceleration'][0], sample['acceleration'][1],
+       sample['acceleration'][2], counter, counter)
 
                 IAmTheBatmanJS += """
 
@@ -240,6 +287,12 @@ $(function () {
 
         $("#generateRoute").attr("disabled", true);
         setTimeout(function() { enableButton() }, 3000);
+
+        if (errorCounter > 0) {
+            statusDisplay.innerHTML = "Threshold exceeded - goods compromised!"
+        } else {
+            statusDisplay.innerHTML = "Goods safely transported."
+        }
 
     });
 });
