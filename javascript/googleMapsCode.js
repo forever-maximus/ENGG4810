@@ -150,6 +150,44 @@ $(function () {
             }
         }
 
+        else if (currentSensor == "humidity") {
+            if (15 > minThreshold && 15 < maxThreshold) {
+                route1 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route1 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+
+        else if (currentSensor == "pressure") {
+            if (7 > minThreshold && 7 < maxThreshold) {
+                route1 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route1 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+
 
         var request = {
             origin: new google.maps.LatLng(-27.504328, 153.025498),
@@ -195,6 +233,44 @@ $(function () {
 
         else if (currentSensor == "Acceleration") {
             if (0.6 < maxThreshold && 0.7 < maxThreshold && 0.4 < maxThreshold) {
+                route2 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route2 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+
+        else if (currentSensor == "humidity") {
+            if (8 > minThreshold && 8 < maxThreshold) {
+                route2 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route2 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+
+        else if (currentSensor == "pressure") {
+            if (4 > minThreshold && 4 < maxThreshold) {
                 route2 = new google.maps.Polyline({
                     path: [],
                     strokeColor: "#00FF00",
@@ -274,6 +350,44 @@ $(function () {
             }
         }
 
+        else if (currentSensor == "humidity") {
+            if (18 > minThreshold && 18 < maxThreshold) {
+                route3 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route3 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+
+        else if (currentSensor == "pressure") {
+            if (5.2 > minThreshold && 5.2 < maxThreshold) {
+                route3 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route3 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+
 
         var request = {
             origin: new google.maps.LatLng(-27.502196, 153.030047),
@@ -319,6 +433,44 @@ $(function () {
 
         else if (currentSensor == "Acceleration") {
             if (1.3 < maxThreshold && 1.0 < maxThreshold && 0.9 < maxThreshold) {
+                route4 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route4 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+
+        else if (currentSensor == "humidity") {
+            if (17.5 > minThreshold && 17.5 < maxThreshold) {
+                route4 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route4 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+
+        else if (currentSensor == "pressure") {
+            if (4.7 > minThreshold && 4.7 < maxThreshold) {
                 route4 = new google.maps.Polyline({
                     path: [],
                     strokeColor: "#00FF00",
@@ -398,6 +550,44 @@ $(function () {
             }
         }
 
+        else if (currentSensor == "humidity") {
+            if (16 > minThreshold && 16 < maxThreshold) {
+                route5 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route5 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+
+        else if (currentSensor == "pressure") {
+            if (1.1 > minThreshold && 1.1 < maxThreshold) {
+                route5 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route5 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+
 
         var request = {
             origin: new google.maps.LatLng(-27.504176, 153.034167),
@@ -443,6 +633,44 @@ $(function () {
 
         else if (currentSensor == "Acceleration") {
             if (1.1 < maxThreshold && 0.8 < maxThreshold && 0.3 < maxThreshold) {
+                route6 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route6 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+
+        else if (currentSensor == "humidity") {
+            if (15 > minThreshold && 15 < maxThreshold) {
+                route6 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route6 = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+
+        else if (currentSensor == "pressure") {
+            if (-1.1 > minThreshold && -1.1 < maxThreshold) {
                 route6 = new google.maps.Polyline({
                     path: [],
                     strokeColor: "#00FF00",

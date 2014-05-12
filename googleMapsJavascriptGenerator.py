@@ -245,6 +245,49 @@ $(function () {
         }
 """ % (sample['acceleration'][0], sample['acceleration'][1],
        sample['acceleration'][2], counter, counter)
+                if 'humidity' in sample :
+                    IAmTheBatmanJS += """
+        else if (currentSensor == "humidity") {
+            if (%s > minThreshold && %s < maxThreshold) {
+                route%s = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route%s = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+""" % (sample['humidity'], sample['humidity'], counter, counter)
+
+                if 'pressure' in sample:
+                    IAmTheBatmanJS += """
+        else if (currentSensor == "pressure") {
+            if (%s > minThreshold && %s < maxThreshold) {
+                route%s = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#00FF00",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+            } else {
+                route%s = new google.maps.Polyline({
+                    path: [],
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 3
+                });
+                errorCounter += 1;
+            }
+        }
+""" % (sample['pressure'], sample['pressure'], counter, counter)
 
                 IAmTheBatmanJS += """
 
