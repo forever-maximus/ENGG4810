@@ -348,8 +348,10 @@ $(function () {
         setTimeout(function() { enableButton() }, 3000);
 
         if (errorCounter > 0) {
+            $("#routeStatus").addClass('error');
             statusDisplay.innerHTML = "Threshold exceeded - goods compromised!"
         } else {
+            $("#routeStatus").removeClass('error');
             statusDisplay.innerHTML = "Goods safely transported."
         }
 
