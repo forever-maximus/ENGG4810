@@ -25,6 +25,8 @@ var enableButton = function () {
 }
 
 
+
+
 window.onload = function () {
 
 
@@ -85,7 +87,18 @@ window.onload = function () {
 
 
 $(function () {
-	$("#generateRoute").click(function() {
+    $("#sensorSelector").change(function () {
+        var currentSensor = $("#sensorSelector").val();
+        if (currentSensor == "acceleration") {
+            //$("#minThreshold").prop('disabled', true);
+            $("#minThresholdContainer").hide();
+        } else {
+            //$("#minThreshold").prop('disabled', false);
+            $("#minThresholdContainer").show();
+        }
+    });
+
+    $("#generateRoute").click(function() {
 
         for (i = 0; i < polylineArray.length; i++) {
             polylineArray[i].setMap(null);
@@ -94,12 +107,11 @@ $(function () {
             markerArray[i].setMap(null);
         }
 
-        var sensorSelector = document.getElementById("sensorSelector");
-        var currentSensor = sensorSelector.options[sensorSelector.selectedIndex].text;
+        var currentSensor = $("#sensorSelector").val();
         var minThreshold = document.getElementById("minThreshold").value;
         var maxThreshold = document.getElementById("maxThreshold").value;
         var statusDisplay = document.getElementById("routeStatus");
-
+        
         errorCounter = 0;
 	
 
@@ -112,7 +124,7 @@ $(function () {
         markerArray.push(startMarker);
 
         var route1;
-        if (currentSensor == "Temperature") {
+        if (currentSensor == "temperature") {
             if (27 > minThreshold && 27 < maxThreshold) {
                 route1 = new google.maps.Polyline({
                     path: [],
@@ -131,7 +143,7 @@ $(function () {
             }
         }
 
-        else if (currentSensor == "Acceleration") {
+        else if (currentSensor == "acceleration") {
             if (1.1 < maxThreshold && 2.1 < maxThreshold && 3.1 < maxThreshold) {
                 route1 = new google.maps.Polyline({
                     path: [],
@@ -212,7 +224,7 @@ $(function () {
         polylineArray.push(route1);
 
         var route2;
-        if (currentSensor == "Temperature") {
+        if (currentSensor == "temperature") {
             if (27.5 > minThreshold && 27.5 < maxThreshold) {
                 route2 = new google.maps.Polyline({
                     path: [],
@@ -231,7 +243,7 @@ $(function () {
             }
         }
 
-        else if (currentSensor == "Acceleration") {
+        else if (currentSensor == "acceleration") {
             if (0.6 < maxThreshold && 0.7 < maxThreshold && 0.4 < maxThreshold) {
                 route2 = new google.maps.Polyline({
                     path: [],
@@ -312,7 +324,7 @@ $(function () {
         polylineArray.push(route2);
 
         var route3;
-        if (currentSensor == "Temperature") {
+        if (currentSensor == "temperature") {
             if (30 > minThreshold && 30 < maxThreshold) {
                 route3 = new google.maps.Polyline({
                     path: [],
@@ -331,7 +343,7 @@ $(function () {
             }
         }
 
-        else if (currentSensor == "Acceleration") {
+        else if (currentSensor == "acceleration") {
             if (0.3 < maxThreshold && 0.2 < maxThreshold && 0.1 < maxThreshold) {
                 route3 = new google.maps.Polyline({
                     path: [],
@@ -412,7 +424,7 @@ $(function () {
         polylineArray.push(route3);
 
         var route4;
-        if (currentSensor == "Temperature") {
+        if (currentSensor == "temperature") {
             if (28.5 > minThreshold && 28.5 < maxThreshold) {
                 route4 = new google.maps.Polyline({
                     path: [],
@@ -431,7 +443,7 @@ $(function () {
             }
         }
 
-        else if (currentSensor == "Acceleration") {
+        else if (currentSensor == "acceleration") {
             if (1.3 < maxThreshold && 1.0 < maxThreshold && 0.9 < maxThreshold) {
                 route4 = new google.maps.Polyline({
                     path: [],
@@ -512,7 +524,7 @@ $(function () {
         polylineArray.push(route4);
 
         var route5;
-        if (currentSensor == "Temperature") {
+        if (currentSensor == "temperature") {
             if (27 > minThreshold && 27 < maxThreshold) {
                 route5 = new google.maps.Polyline({
                     path: [],
@@ -531,7 +543,7 @@ $(function () {
             }
         }
 
-        else if (currentSensor == "Acceleration") {
+        else if (currentSensor == "acceleration") {
             if (2.3 < maxThreshold && 0.1 < maxThreshold && 1.5 < maxThreshold) {
                 route5 = new google.maps.Polyline({
                     path: [],
@@ -612,7 +624,7 @@ $(function () {
         polylineArray.push(route5);
 
         var route6;
-        if (currentSensor == "Temperature") {
+        if (currentSensor == "temperature") {
             if (28 > minThreshold && 28 < maxThreshold) {
                 route6 = new google.maps.Polyline({
                     path: [],
@@ -631,7 +643,7 @@ $(function () {
             }
         }
 
-        else if (currentSensor == "Acceleration") {
+        else if (currentSensor == "acceleration") {
             if (1.1 < maxThreshold && 0.8 < maxThreshold && 0.3 < maxThreshold) {
                 route6 = new google.maps.Polyline({
                     path: [],

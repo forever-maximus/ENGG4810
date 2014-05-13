@@ -139,6 +139,10 @@ var enableButton = function () {
     $("#generateRoute").removeAttr("disabled");
 }
 """ % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
+
+        IAmTheBatmanJS += """
+
+"""
         
         IAmTheBatmanJS += """
 
@@ -156,14 +160,26 @@ window.onload = function () {
         select.add(option, 0);
     }
 """ % (i, i, i, i, i, i)
+            
         IAmTheBatmanJS += """
 };
 """
-        print len(self.sensorValues[0])
+        
         IAmTheBatmanJS += """
 
 $(function () {
-	$("#generateRoute").click(function() {
+    $("#sensorSelector").change(function () {
+        var currentSensor = $("#sensorSelector").val();
+        if (currentSensor == "acceleration") {
+            //$("#minThreshold").prop('disabled', true);
+            $("#minThresholdContainer").hide();
+        } else {
+            //$("#minThreshold").prop('disabled', false);
+            $("#minThresholdContainer").show();
+        }
+    });
+
+    $("#generateRoute").click(function() {
 
         for (i = 0; i < polylineArray.length; i++) {
             polylineArray[i].setMap(null);
@@ -172,12 +188,11 @@ $(function () {
             markerArray[i].setMap(null);
         }
 
-        var sensorSelector = document.getElementById("sensorSelector");
-        var currentSensor = sensorSelector.options[sensorSelector.selectedIndex].text;
+        var currentSensor = $("#sensorSelector").val();
         var minThreshold = document.getElementById("minThreshold").value;
         var maxThreshold = document.getElementById("maxThreshold").value;
         var statusDisplay = document.getElementById("routeStatus");
-
+        
         errorCounter = 0;
 	
 """
@@ -203,7 +218,7 @@ $(function () {
             else:
                 IAmTheBatmanJS += """
         var route%s;
-        if (currentSensor == "Temperature") {
+        if (currentSensor == "temperature") {
             if (%s > minThreshold && %s < maxThreshold) {
                 route%s = new google.maps.Polyline({
                     path: [],
@@ -225,7 +240,7 @@ $(function () {
        counter)
 
                 IAmTheBatmanJS += """
-        else if (currentSensor == "Acceleration") {
+        else if (currentSensor == "acceleration") {
             if (%s < maxThreshold && %s < maxThreshold && %s < maxThreshold) {
                 route%s = new google.maps.Polyline({
                     path: [],
@@ -245,6 +260,7 @@ $(function () {
         }
 """ % (sample['acceleration'][0], sample['acceleration'][1],
        sample['acceleration'][2], counter, counter)
+                
                 if 'humidity' in sample :
                     IAmTheBatmanJS += """
         else if (currentSensor == "humidity") {
