@@ -98,6 +98,18 @@ $(function () {
         }
     });
 
+    $("#mainSlider").slider({
+        range: true,
+        min: 0,
+        max: 100,
+        values: [10, 50],
+        slide: function(event, ui) {
+            $("#minThreshold").val(ui.values[0]);
+            $("#maxThreshold").val(ui.values[1]);
+        }
+    });
+
+
     $("#generateRoute").click(function() {
 
         for (i = 0; i < polylineArray.length; i++) {

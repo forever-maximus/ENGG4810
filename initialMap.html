@@ -6,19 +6,22 @@
 		<title>ENGG4810 initial test</title>
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHTSKMqr_k_Dpg4jir1JJfX0bGMfzSCGs&sensor=false"></script>
 		<script src="javascript/jquery-1.7.2.min.js"></script>
+		<script src="javascript/jquery-ui-1.10.4.custom/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js"></script>
 		<script type="text/javascript" src="javascript/googleMapsCode.js"></script>
 		<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+		<link href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css' rel='stylesheet' type='text/css'>
 		<style type="text/css">
 			html { height: 100% }
 			body { height: 100%; margin: 0; padding: 0 }
 			#mapCanvas { height: 100%; width: 70%; float: left }
 			#menu { height: 100%; width: 30%; float: right }
-			h1 { margin: 0; font-family: 'Open Sans', sans-serif; padding-bottom: 20px; }
-			p { font-family: 'Open Sans', sans-serif; font-size: 14px; }
+			h1 { margin: 0; font-family: 'Open Sans', sans-serif; font-size: 40px; padding-bottom: 20px; color: #444444; text-align: center }
+			p { font-family: 'Open Sans', sans-serif; font-size: 14px; color: #444444 }
 			form { font-family: 'Open Sans', sans-serif; font-size: 14px; margin: 10px 0px 20px 0px}
-			#content { margin: 20px; font-family: 'Open Sans', sans-serif }
-			#routeStatus {margin: 20px 0px 0px 0px}
+			#content { margin: 20px; font-family: 'Open Sans', sans-serif}
+			#routeStatus {margin: 50px 0px 0px 0px}
 			.error {color: #FF0000}
+			#mainSlider {margin: 20px 0px 0px 0px}
 		</style>
 	</head>
 	
@@ -26,15 +29,18 @@
 		<div id="mapCanvas"></div>
 		<div id="menu">
 			<div id="content">
-				<h1>ENGG4810 TP2</h1>
+				<div id="header">
+					<h1>ENGG4810 TP2</h1>
+				</div>
 				<form>
 					Sensor: 
 					<select id="sensorSelector">
 						<option value="temperature">temperature</option>
 						<option value="acceleration">acceleration</option>
 					</select><br>
-					<span id="minThresholdContainer">Minimum threshold: <input id="minThreshold" type="text" name="minThreshold"></span>
-					<span id="maxThresholdContainer">Maximum threshold: <input id="maxThreshold" type="text" name="maxThreshold"></span>
+					<span id="minThresholdContainer"><label>Minimum threshold: </label><input id="minThreshold" type="text" name="minThreshold"></span><br>
+					<span id="maxThresholdContainer"><label>Maximum threshold: </label><input id="maxThreshold" type="text" name="maxThreshold"></span><br>
+					<div id="mainSlider"></div>
 				</form>
 				<input id="generateRoute" type="button" value="Generate Route">
 				<div id="routeStatus">	
