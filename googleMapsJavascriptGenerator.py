@@ -181,10 +181,29 @@ $(function () {
 """
 
         IAmTheBatmanJS += """
+    $("#sensorSelector").change(function () {
+        var currentSensor = $("#sensorSelector").val();
+        if (currentSensor == "temperature") {
+            $("#mainSlider").slider('option', {min:-20, max:80});
+            $("#mainSlider").slider('values', 0, 10);
+            $("#mainSlider").slider('values', 1, 50);
+        } else if (currentSensor == "acceleration") {
+        
+        } else if (currentSensor == "pressure") {
+            $("#mainSlider").slider('option', {min:80, max:115});
+            $("#mainSlider").slider('values', 0, 90);
+            $("#mainSlider").slider('values', 1, 100);
+        } else if (currentSensor == "humidity") {
+            $("#mainSlider").slider('option', {min:0, max:100});
+            $("#mainSlider").slider('values', 0, 20);
+            $("#mainSlider").slider('values', 1, 50);
+        }
+    });
+
     $("#mainSlider").slider({
         range: true,
-        min: 0,
-        max: 100,
+        min: -20,
+        max: 80,
         values: [10, 50],
         slide: function(event, ui) {
             $("#minThreshold").val(ui.values[0]);
