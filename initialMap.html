@@ -21,7 +21,7 @@
 			#content { margin: 20px; font-family: 'Open Sans', sans-serif}
 			#routeStatus {margin: 50px 0px 0px 0px}
 			.error {color: #FF0000}
-			#mainSlider {margin: 20px 0px 0px 0px}
+			.slider {margin: 20px 0px 0px 0px}
 		</style>
 	</head>
 	
@@ -46,7 +46,8 @@
 					</select><br>
 					<span id="minThresholdContainer"><label>Minimum threshold: </label><input id="minThreshold" type="text" name="minThreshold"></span><br>
 					<span id="maxThresholdContainer"><label>Maximum threshold: </label><input id="maxThreshold" type="text" name="maxThreshold"></span><br>
-					<div id="mainSlider"></div>
+					<div id="mainSlider" class="slider"></div>
+					<div id="accelSlider" class="slider"></div>
 				</form>
 				<input id="generateRoute" type="button" value="Generate Route">
 				<div id="routeStatus">	

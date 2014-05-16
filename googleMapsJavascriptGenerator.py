@@ -170,25 +170,24 @@ window.onload = function () {
 $(function () {
     $("#sensorSelector").change(function () {
         var currentSensor = $("#sensorSelector").val();
+        $("#minThreshold").val("");
+        $("#maxThreshold").val("");
         if (currentSensor == "acceleration") {
-            //$("#minThreshold").prop('disabled', true);
             $("#minThresholdContainer").hide();
+            $("#accelSlider").show();
+            $("#mainSlider").hide();
         } else {
-            //$("#minThreshold").prop('disabled', false);
             $("#minThresholdContainer").show();
+            $("#accelSlider").hide();
+            $("#mainSlider").show();
         }
-    });
-"""
 
-        IAmTheBatmanJS += """
-    $("#sensorSelector").change(function () {
-        var currentSensor = $("#sensorSelector").val();
         if (currentSensor == "temperature") {
             $("#mainSlider").slider('option', {min:-20, max:80});
             $("#mainSlider").slider('values', 0, 10);
             $("#mainSlider").slider('values', 1, 50);
         } else if (currentSensor == "acceleration") {
-        
+            
         } else if (currentSensor == "pressure") {
             $("#mainSlider").slider('option', {min:80, max:115});
             $("#mainSlider").slider('values', 0, 90);
@@ -199,7 +198,9 @@ $(function () {
             $("#mainSlider").slider('values', 1, 50);
         }
     });
+"""
 
+        IAmTheBatmanJS += """
     $("#mainSlider").slider({
         range: true,
         min: -20,
@@ -210,6 +211,18 @@ $(function () {
             $("#maxThreshold").val(ui.values[1]);
         }
     });
+
+    $("#accelSlider").slider({
+        range: "min",
+        step: 0.5,
+        value: 0.0,
+        min: -10.0,
+        max: 10.0,
+        slide: function(event, ui) {
+            $("#maxThreshold").val(ui.value);
+        }
+    });
+    $("#accelSlider").hide();
 """
         
         IAmTheBatmanJS += """
