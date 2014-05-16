@@ -283,9 +283,18 @@ $(function () {
                 });
                 errorCounter += 1;
             }
-        }
 """ % (counter, sample['temperature'], sample['temperature'], counter,
        counter)
+                IAmTheBatmanJS += """
+            google.maps.event.addListener(route%s, 'mouseover', function () {
+                var infoWindow = document.getElementById("routeInfoWindow");
+                infoWindow.innerHTML = "";
+                infoWindow.innerHTML = "<b>Route Segment Values: </b><br>"
+                infoWindow.innerHTML += "latitude = %s <br>longitude = %s" +
+                        "<br>temperature = %s";
+            });
+        }
+""" % (counter, sample['latitude'], sample['longitude'], sample['temperature'])
 
                 IAmTheBatmanJS += """
         else if (currentSensor == "acceleration") {
@@ -328,8 +337,18 @@ $(function () {
                 });
                 errorCounter += 1;
             }
-        }
 """ % (sample['humidity'], sample['humidity'], counter, counter)
+
+                IAmTheBatmanJS += """
+            google.maps.event.addListener(route%s, 'mouseover', function () {
+                var infoWindow = document.getElementById("routeInfoWindow");
+                infoWindow.innerHTML = "";
+                infoWindow.innerHTML = "<b>Route Segment Values: </b><br>"
+                infoWindow.innerHTML += "latitude = %s <br>longitude = %s" +
+                        "<br>humidity = %s";
+            });
+        }
+""" % (counter, sample['latitude'], sample['longitude'], sample['humidity'])
 
                 if 'pressure' in sample:
                     IAmTheBatmanJS += """
@@ -350,8 +369,18 @@ $(function () {
                 });
                 errorCounter += 1;
             }
-        }
 """ % (sample['pressure'], sample['pressure'], counter, counter)
+
+                IAmTheBatmanJS += """
+            google.maps.event.addListener(route%s, 'mouseover', function() {
+                var infoWindow = document.getElementById("routeInfoWindow");
+                infoWindow.innerHTML = "";
+                infoWindow.innerHTML = "<b>Route Segment Values: </b><br>"
+                infoWindow.innerHTML += "latitude = %s <br>longitude = %s" +
+                        "<br>pressure = %s";
+            });
+        }
+""" % (counter, sample['latitude'], sample['longitude'], sample['pressure'])
 
                 IAmTheBatmanJS += """
 

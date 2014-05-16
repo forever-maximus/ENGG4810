@@ -15,25 +15,28 @@
 			body { height: 100%; margin: 0; padding: 0 }
 			#mapCanvas { height: 100%; width: 70%; float: left }
 			#menu { height: 100%; width: 30%; float: right }
-			h1 { margin: 0; font-family: 'Open Sans', sans-serif; font-size: 40px; padding-bottom: 20px; color: #444444; text-align: center }
+			h1 { margin: 0; font-family: 'Open Sans', sans-serif; font-size: 40px; padding-bottom: 10px; color: #444444; text-align: center }
 			p { font-family: 'Open Sans', sans-serif; font-size: 14px; color: #444444 }
 			form { font-family: 'Open Sans', sans-serif; font-size: 14px; margin: 10px 0px 20px 0px}
 			#content { margin: 20px; font-family: 'Open Sans', sans-serif}
 			#routeStatus {margin: 50px 0px 0px 0px}
 			.error {color: #FF0000}
 			.slider {margin: 20px 0px 0px 0px}
+			#routeInfoWindow {position: absolute; left: 10px; bottom: 10px; background-color: #FFFFFF; height: 15%; width:20%; opacity: 0.8;
+								box-shadow: 0px 0px 20px #888888; border-radius: 5px; padding: 10px 20px 10px 20px; font-family: 'Open Sans', sans-serif}
 		</style>
 	</head>
 	
 	<body>
 		<div id="mapCanvas"></div>
+		<div id="routeInfoWindow"><b>Route Segment Values: </b><br></div>
 		<div id="menu">
 			<div id="content">
 				<div id="header">
 					<h1>ENGG4810 TP2</h1>
 				</div>
-				<!--<p>Welcome to the portable logger display software.</p>
-				<p>
+				<p>Welcome to the portable logger display software.</p>
+				<!--<p>
 					Instructions: Select a sensor from the dropdown list. Enter the minimum and maximum thresholds respectively, either by
 					entering values into the text box's or using the range slider. Click the 'generate route' button to display the route and
 					evaluate whether the trip safely transported the goods.
