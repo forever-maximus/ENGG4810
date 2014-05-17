@@ -314,9 +314,20 @@ $(function () {
                 });
                 errorCounter += 1;
             }
-        }
 """ % (sample['acceleration'][0], sample['acceleration'][1],
        sample['acceleration'][2], counter, counter)
+
+                IAmTheBatmanJS += """
+            google.maps.event.addListener(route%s, 'mouseover', function() {
+                var infoWindow = document.getElementById("routeInfoWindow");
+                infoWindow.innerHTML = "";
+                infoWindow.innerHTML = "<b>Route Segment Values: </b><br>"
+                infoWindow.innerHTML += "latitude = %s <br>longitude = %s" +
+                        "<br>acceleration = [%s, %s, %s]";
+            });
+        }
+""" % (counter, sample['latitude'], sample['longitude'], sample['acceleration'][0],
+       sample['acceleration'][1], sample['acceleration'][2])
                 
                 if 'humidity' in sample :
                     IAmTheBatmanJS += """
