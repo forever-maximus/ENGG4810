@@ -1,107 +1,10 @@
-# Reads from sensor logger file and generates javascript for google maps
-
 import os
-import paramiko
-import yaml
+from SSHServerFunctions import *
+from yamlParser import *
 
-""" Provides methods for connecting to cloud via SSH and copying selected
-*** sensor Data to local host via SFTP.     
+""" Class which controls the generation of the javascript for the software depending
+*** on the values from the sensor data file
 """
-class DataRetriever:
-
-    ssh = 0
-    currentDirectory = "/home/groups/engg4810g/"
-
-    def __init__(self):
-        self.connect()
-
-    def connect(self):
-        self.ssh = paramiko.SSHClient()
-        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        privateKey = paramiko.RSAKey.from_private_key_file("TP2PrivateOpenSSHKey.ppk")
-        self.ssh.connect(hostname='moss.labs.eait.uq.edu.au', username='s4238289',
-                    pkey=privateKey)
-        print "Successfully connected.\n"
-        print "Navigate to file for download using 'cd <foldername>' and then use command 'get <filename>' to select the file for analysis\n"
-        self.readInput()
-
-    def readInput(self):
-        #self.testConnection()
-        while (True):
-            stdin, stdout, stderr = self.ssh.exec_command("ls " + self.currentDirectory)
-            output = stdout.readlines()
-            self.displayDirectory(output)
-            value = raw_input("> ")
-            commands = value.split()
-            if not commands:
-                print "Try using 'cd <directory>' or 'get <filename>'\n"
-            elif (commands[0] == "cd"):
-                if (commands[1] == ".."):
-                    self.currentDirectory = "/home/groups/engg4810g/"
-                else:
-                    self.currentDirectory += commands[1] + "/"
-            elif (commands[0] == "get"):
-                print "Retrieving file for analysis and display"
-                sftp = self.ssh.open_sftp()
-                sftp.get(self.currentDirectory + commands[1], 'sensorData/sensorSamples.txt')
-                sftp.close()
-                self.closeConnection()
-                return
-            else:
-                print "'" + commands[0] + "' is not a valid command!"
-                print "Try using 'cd <directory>' or 'get <filename>'\n"
-
-    def testConnection(self):
-        stdin, stdout, stderr = self.ssh.exec_command("pwd")
-        output = stdout.readlines()
-        print output
-
-    def displayDirectory(self, output):
-        prettyDisplay = ""
-        counter = 1
-        for option in output:
-            withoutNewline = option.split()
-            if counter % 3 == 0:
-                prettyDisplay += withoutNewline[0] + "\n"
-            else:
-                prettyDisplay += withoutNewline[0] + "\t"
-            counter += 1
-        print prettyDisplay + "\n"
-
-    def closeConnection(self):
-        self.ssh.close()
-
-
-class SensorDataManager:
-
-    sensorValues = []
-
-    def __init__(self):
-        pass
-
-    # Opens data file pulled from cloud server and parses the YAML.
-    def gatherData(self):
-
-        unstructuredData = ""
-        
-        with open('sensorData/sensorSamples.txt', 'r') as sensorFile:
-            while True:
-                line = sensorFile.readline()
-                if not line:
-                    break
-                unstructuredData += line
-
-        yamlData = yaml.load(unstructuredData)
-        self.sensorValues = yamlData['samples']
-
-    # Generates a nicer display of the gathered data by simply printing
-    # out each dictionary on a new line. Useful for debugging.
-    def displayData(self):
-        
-        for i in self.sensorValues:
-            print i
-
-
 class JavascriptGenerator:
 
     sensorValues = []
@@ -113,7 +16,50 @@ class JavascriptGenerator:
 
         newJsFile = open('javascript/googleMapsCode.js', 'w')
 
-        IAmTheBatmanJS = """
+        IAmTheBatmanJS = self._initializeMap()      
+        IAmTheBatmanJS += self._generateDropDown()      
+        IAmTheBatmanJS += self._addSliderJS()
+        
+        IAmTheBatmanJS += self._startMapRouting()
+
+        counter = 0
+        previous = {}
+        
+        for sample in self.sensorValues:
+            if counter == 0:
+                previous = sample
+                counter += 1
+                continue
+            else:
+                if 'latitude' in sample and 'longitude' in sample:
+                    
+                    IAmTheBatmanJS += self._addTempSensorMapping(counter, sample)
+                    IAmTheBatmanJS += self._addAccelSensorMapping(counter, sample)
+                
+                    if 'humidity' in sample :
+                        IAmTheBatmanJS += self._addHumiditySensorMapping(counter, sample)
+
+                    if 'pressure' in sample:
+                        IAmTheBatmanJS += self._addPressureSensorMapping(counter, sample)
+
+                    IAmTheBatmanJS += self._callGoogleDirections(counter, sample, previous)
+
+                    previous = sample
+
+                else:
+                    pass
+       
+                counter += 1
+
+        IAmTheBatmanJS += self._endMapRouting()
+        
+        newJsFile.write(IAmTheBatmanJS)
+        newJsFile.close()
+
+    ## Initializes the Google map object and arrays for map objects
+    def _initializeMap(self):
+
+        initialMapJS = """
 var map = null;
 var directionsService;
 var polylineArray = [];
@@ -138,19 +84,20 @@ google.maps.event.addDomListener(window, 'load', initializeMap);
 var enableButton = function () {
     $("#generateRoute").removeAttr("disabled");
 }
-""" % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
+        """ % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
 
-        IAmTheBatmanJS += """
+        return initialMapJS
 
-"""
-        
-        IAmTheBatmanJS += """
+    ## Adds sensor names to dropdown list at runtime
+    def _generateDropDown(self):
+
+        dynamicDropDown = """
 
 window.onload = function () {
 """
         for i in self.sensorValues[0]:
             
-            IAmTheBatmanJS += """
+            dynamicDropDown += """
 
     if ('%s' != 'temperature' && '%s' != 'acceleration' && '%s' != 'latitude' &&
             '%s' != 'longitude' && '%s' != 'time') {
@@ -159,13 +106,19 @@ window.onload = function () {
         option.text = option.value = '%s';
         select.add(option, 0);
     }
-""" % (i, i, i, i, i, i)
+        """ % (i, i, i, i, i, i)
             
-        IAmTheBatmanJS += """
+        dynamicDropDown += """
 };
-"""
-        
-        IAmTheBatmanJS += """
+        """
+
+        return dynamicDropDown
+
+    ## Generates the code to add JQuery UI sliders and the code which
+    ## controls them
+    def _addSliderJS(self):
+
+        sliderJS = """
 
 $(function () {
     $("#sensorSelector").change(function () {
@@ -198,9 +151,7 @@ $(function () {
             $("#mainSlider").slider('values', 1, 50);
         }
     });
-"""
-
-        IAmTheBatmanJS += """
+    
     $("#mainSlider").slider({
         range: true,
         min: -20,
@@ -223,9 +174,14 @@ $(function () {
         }
     });
     $("#accelSlider").hide();
-"""
-        
-        IAmTheBatmanJS += """
+        """
+
+        return sliderJS
+
+
+    def _startMapRouting(self):
+
+        startMapping = """
 
     $("#generateRoute").click(function() {
 
@@ -242,10 +198,6 @@ $(function () {
         var statusDisplay = document.getElementById("routeStatus");
         
         errorCounter = 0;
-	
-"""
-
-        IAmTheBatmanJS += """
 
         var startMarker = new google.maps.Marker({
             position: new google.maps.LatLng(%s, %s),
@@ -253,18 +205,14 @@ $(function () {
             title: 'Start'
         });
         markerArray.push(startMarker);
-""" % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
+        """ % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
+	
+        return startMapping
 
-        counter = 0
-        previous = {}
-        
-        for sample in self.sensorValues:
-            if counter == 0:
-                previous = sample
-                counter += 1
-                continue
-            else:
-                IAmTheBatmanJS += """
+
+    def _addTempSensorMapping(self, counter, sample):
+
+        tempSensorJS = """
         var route%s;
         if (currentSensor == "temperature") {
             if (%s > minThreshold && %s < maxThreshold) {
@@ -283,9 +231,10 @@ $(function () {
                 });
                 errorCounter += 1;
             }
-""" % (counter, sample['temperature'], sample['temperature'], counter,
-       counter)
-                IAmTheBatmanJS += """
+        """ % (counter, sample['temperature'], sample['temperature'],
+               counter, counter)
+
+        tempSensorJS += """
             google.maps.event.addListener(route%s, 'mouseover', function () {
                 var infoWindow = document.getElementById("routeInfoWindow");
                 infoWindow.innerHTML = "";
@@ -294,9 +243,14 @@ $(function () {
                         "<br>temperature = %s";
             });
         }
-""" % (counter, sample['latitude'], sample['longitude'], sample['temperature'])
+        """ % (counter, sample['latitude'], sample['longitude'], sample['temperature'])
 
-                IAmTheBatmanJS += """
+        return tempSensorJS
+
+
+    def _addAccelSensorMapping(self, counter, sample):
+
+        accelSensorJS = """
         else if (currentSensor == "acceleration") {
             if (%s < maxThreshold && %s < maxThreshold && %s < maxThreshold) {
                 route%s = new google.maps.Polyline({
@@ -314,10 +268,10 @@ $(function () {
                 });
                 errorCounter += 1;
             }
-""" % (sample['acceleration'][0], sample['acceleration'][1],
-       sample['acceleration'][2], counter, counter)
+        """ % (sample['acceleration'][0], sample['acceleration'][1],
+                sample['acceleration'][2], counter, counter)
 
-                IAmTheBatmanJS += """
+        accelSensorJS += """
             google.maps.event.addListener(route%s, 'mouseover', function() {
                 var infoWindow = document.getElementById("routeInfoWindow");
                 infoWindow.innerHTML = "";
@@ -326,11 +280,16 @@ $(function () {
                         "<br>acceleration = [%s, %s, %s]";
             });
         }
-""" % (counter, sample['latitude'], sample['longitude'], sample['acceleration'][0],
-       sample['acceleration'][1], sample['acceleration'][2])
-                
-                if 'humidity' in sample :
-                    IAmTheBatmanJS += """
+        """ % (counter, sample['latitude'], sample['longitude'],
+               sample['acceleration'][0],sample['acceleration'][1],
+               sample['acceleration'][2])
+
+        return accelSensorJS
+
+
+    def _addHumiditySensorMapping(self, counter, sample):
+
+        humiditySensorJS = """
         else if (currentSensor == "humidity") {
             if (%s > minThreshold && %s < maxThreshold) {
                 route%s = new google.maps.Polyline({
@@ -348,9 +307,9 @@ $(function () {
                 });
                 errorCounter += 1;
             }
-""" % (sample['humidity'], sample['humidity'], counter, counter)
+        """ % (sample['humidity'], sample['humidity'], counter, counter)
 
-                IAmTheBatmanJS += """
+        humiditySensorJS += """
             google.maps.event.addListener(route%s, 'mouseover', function () {
                 var infoWindow = document.getElementById("routeInfoWindow");
                 infoWindow.innerHTML = "";
@@ -359,10 +318,14 @@ $(function () {
                         "<br>humidity = %s";
             });
         }
-""" % (counter, sample['latitude'], sample['longitude'], sample['humidity'])
+        """ % (counter, sample['latitude'], sample['longitude'], sample['humidity'])
 
-                if 'pressure' in sample:
-                    IAmTheBatmanJS += """
+        return humiditySensorJS
+    
+
+    def _addPressureSensorMapping(self, counter, sample):
+
+        pressureSensorJS = """
         else if (currentSensor == "pressure") {
             if (%s > minThreshold && %s < maxThreshold) {
                 route%s = new google.maps.Polyline({
@@ -380,9 +343,9 @@ $(function () {
                 });
                 errorCounter += 1;
             }
-""" % (sample['pressure'], sample['pressure'], counter, counter)
+        """ % (sample['pressure'], sample['pressure'], counter, counter)
 
-                IAmTheBatmanJS += """
+        pressureSensorJS += """
             google.maps.event.addListener(route%s, 'mouseover', function() {
                 var infoWindow = document.getElementById("routeInfoWindow");
                 infoWindow.innerHTML = "";
@@ -391,9 +354,14 @@ $(function () {
                         "<br>pressure = %s";
             });
         }
-""" % (counter, sample['latitude'], sample['longitude'], sample['pressure'])
+        """ % (counter, sample['latitude'], sample['longitude'], sample['pressure'])
 
-                IAmTheBatmanJS += """
+        return pressureSensorJS
+    
+
+    def _callGoogleDirections(self, counter, sample, previous):
+
+        googleDirections = """
 
         var request = {
             origin: new google.maps.LatLng(%s, %s),
@@ -416,14 +384,15 @@ $(function () {
 
         route%s.setMap(map);
         polylineArray.push(route%s);
-""" % (previous['latitude'], previous['longitude'],
-       sample['latitude'], sample['longitude'],
-       counter, counter, counter)
-       
-                previous = sample
-                counter += 1
+        """ % (previous['latitude'], previous['longitude'], sample['latitude'],
+               sample['longitude'], counter, counter, counter)
 
-        IAmTheBatmanJS += """
+        return googleDirections
+
+
+    def _endMapRouting(self):
+
+        finishMapping = """
 
         var endMarker = new google.maps.Marker({
             position: new google.maps.LatLng(%s, %s),
@@ -445,10 +414,11 @@ $(function () {
 
     });
 });
-""" % (self.sensorValues[len(self.sensorValues)-1]['latitude'], self.sensorValues[len(self.sensorValues)-1]['longitude'])
+        """ % (self.sensorValues[len(self.sensorValues)-1]['latitude'],
+               self.sensorValues[len(self.sensorValues)-1]['longitude'])
 
-        newJsFile.write(IAmTheBatmanJS)
-        newJsFile.close()
+        return finishMapping
+    
 
 def main():
 
