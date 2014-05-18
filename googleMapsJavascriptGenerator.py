@@ -205,6 +205,12 @@ $(function () {
             title: 'Start'
         });
         markerArray.push(startMarker);
+
+        var lineSymbol = {
+            path: google.maps.SymbolPath.CIRCLE,
+            strokeColor: '#444444',
+            strokeOpacity: 0.5
+        };
         """ % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
 	
         return startMapping
@@ -220,14 +226,16 @@ $(function () {
                     path: [],
                     strokeColor: "#00FF00",
                     strokeOpacity: 0.8,
-                    strokeWeight: 3
+                    strokeWeight: 3,
+                    icons: [{icon: lineSymbol}]
                 });	
             } else {
                 route%s = new google.maps.Polyline({
                     path: [],
                     strokeColor: "#FF0000",
                     strokeOpacity: 0.8,
-                    strokeWeight: 3
+                    strokeWeight: 3,
+                    icons: [{icon: lineSymbol}]
                 });
                 errorCounter += 1;
             }
