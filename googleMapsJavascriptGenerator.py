@@ -266,14 +266,16 @@ $(function () {
                     path: [],
                     strokeColor: "#00FF00",
                     strokeOpacity: 0.8,
-                    strokeWeight: 3
+                    strokeWeight: 3,
+                    icons: [{icon: lineSymbol}]
                 });
             } else {
                 route%s = new google.maps.Polyline({
                     path: [],
                     strokeColor: "#FF0000",
                     strokeOpacity: 0.8,
-                    strokeWeight: 3
+                    strokeWeight: 3,
+                    icons: [{icon: lineSymbol}]
                 });
                 errorCounter += 1;
             }
@@ -305,14 +307,16 @@ $(function () {
                     path: [],
                     strokeColor: "#00FF00",
                     strokeOpacity: 0.8,
-                    strokeWeight: 3
+                    strokeWeight: 3,
+                    icons: [{icon: lineSymbol}]
                 });
             } else {
                 route%s = new google.maps.Polyline({
                     path: [],
                     strokeColor: "#FF0000",
                     strokeOpacity: 0.8,
-                    strokeWeight: 3
+                    strokeWeight: 3,
+                    icons: [{icon: lineSymbol}]
                 });
                 errorCounter += 1;
             }
@@ -341,14 +345,16 @@ $(function () {
                     path: [],
                     strokeColor: "#00FF00",
                     strokeOpacity: 0.8,
-                    strokeWeight: 3
+                    strokeWeight: 3,
+                    icons: [{icon: lineSymbol}]
                 });
             } else {
                 route%s = new google.maps.Polyline({
                     path: [],
                     strokeColor: "#FF0000",
                     strokeOpacity: 0.8,
-                    strokeWeight: 3
+                    strokeWeight: 3,
+                    icons: [{icon: lineSymbol}]
                 });
                 errorCounter += 1;
             }
