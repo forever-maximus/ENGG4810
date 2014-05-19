@@ -47,7 +47,7 @@ class JavascriptGenerator:
                     previous = sample
 
                 else:
-                    pass
+                    IAmTheBatmanJS += self._noRoute(sample)
        
                 counter += 1
 
@@ -198,6 +198,7 @@ $(function () {
         var statusDisplay = document.getElementById("routeStatus");
         
         errorCounter = 0;
+        specialError = 0;
 
         var startMarker = new google.maps.Marker({
             position: new google.maps.LatLng(%s, %s),
@@ -412,7 +413,14 @@ $(function () {
         $("#generateRoute").attr("disabled", true);
         setTimeout(function() { enableButton() }, 3000);
 
-        if (errorCounter > 0) {
+        if (specialError > 0 && errorCounter > 0) {
+            $("#routeStatus").addClass('error');
+            statusDisplay.innerHTML = "Threshold exceeded - goods compromised!" +
+                    "<br>ERROR FROM NON-MAPPED SAMPLE!"
+        } else if (specialError > 0) {
+            $("#routeStatus").addClass('error');
+            statusDisplay.innerHTML = "ERROR FROM NON-MAPPED SAMPLE!"
+        } else if (errorCounter > 0) {
             $("#routeStatus").addClass('error');
             statusDisplay.innerHTML = "Threshold exceeded - goods compromised!"
         } else {
@@ -427,6 +435,46 @@ $(function () {
 
         return finishMapping
     
+
+    def _noRoute(self, sample):
+
+        noRouteJS = """
+        if (currentSensor == "temperature") {
+            if (!(%s > minThreshold && %s < maxThreshold)) {
+                specialError += 1;
+            }
+        }
+        """ % (sample['temperature'], sample['temperature'])
+
+        print sample['acceleration'][2]
+
+        noRouteJS += """
+        else if (currentSensor == "acceleration") {
+            if (!(%s < maxThreshold && %s < maxThreshold && %s < maxThreshold)) {
+                specialError += 1;
+            }
+        }
+        """ % (sample['acceleration'][0], sample['acceleration'][1],
+                sample['acceleration'][2])
+
+        noRouteJS += """
+        else if (currentSensor == "humidity") {
+            if (!(%s > minThreshold && %s < maxThreshold)) {
+                specialError += 1;
+            }
+        }
+        """ % (sample['humidity'], sample['humidity'])
+
+        noRouteJS += """
+        else if (currentSensor == "pressure") {
+            if (!(%s > minThreshold && %s < maxThreshold)) {
+                specialError += 1;
+            }
+        }
+        """ % (sample['pressure'], sample['pressure'])
+
+        return noRouteJS
+
 
 def main():
 
