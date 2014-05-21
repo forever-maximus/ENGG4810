@@ -10,7 +10,6 @@
 		<script type="text/javascript" src="javascript/googleMapsCode.js"></script>
 		<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
 		<link href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css' rel='stylesheet' type='text/css'>
-		<link href="bootstrap-3.1.1-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 		<style type="text/css">
 			html { height: 100% }
 			body { height: 100%; margin: 0; padding: 0 }
@@ -25,7 +24,6 @@
 			.slider {margin: 20px 0px 0px 0px}
 			#routeInfoWindow {position: absolute; left: 10px; bottom: 10px; background-color: #FFFFFF; height: 15%; width:20%; opacity: 0.8;
 								box-shadow: 0px 0px 20px #888888; border-radius: 5px; padding: 10px 20px 10px 20px; font-family: 'Open Sans', sans-serif}
-			input {max-width: 100%}
 		</style>
 	</head>
 	
@@ -43,38 +41,18 @@
 					entering values into the text box's or using the range slider. Click the 'generate route' button to display the route and
 					evaluate whether the trip safely transported the goods.
 				</p>-->
-				
-				<form class="form form-horizontal well" role="form">
-					<div class="form-group">
-						<label for="sensorSelctor" class="col-sm-4 control-label">Sensor: </label>
-						<div class="col-sm-8">
-							<select id="sensorSelector" class="form-control">
-								<option value="temperature">temperature</option>
-								<option value="acceleration">acceleration</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="minThreshold" class="col-sm-4 control-label">Minimum:</label>
-						<div class="col-sm-8">
-							<input id="minThreshold" type="text" name="minThreshold" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="maxThreshold" class="col-sm-4 control-label">Maximum:</label>
-						<div class="col-sm-8">
-							<input id="maxThreshold" type="text" name="maxThreshold" class="form-control">
-						</div>
-					</div>
+				<form>
+					<label for="sensorSelctor">Sensor: </label>
+					<select id="sensorSelector">
+						<option value="temperature">temperature</option>
+						<option value="acceleration">acceleration</option>
+					</select><br>
+					<span id="minThresholdContainer"><label>Minimum threshold: </label><input id="minThreshold" type="text" name="minThreshold"></span><br>
+					<span id="maxThresholdContainer"><label>Maximum threshold: </label><input id="maxThreshold" type="text" name="maxThreshold"></span><br>
 					<div id="mainSlider" class="slider"></div>
-					<div id="accelSlider" class="slider"></div><br>
-					<div class="form-group">
-						<div class="col-sm-offset-4 col-sm-8">
-							<input id="generateRoute" type="button" value="Generate Route" class="btn btn-default">
-						</div>
-					</div>
+					<div id="accelSlider" class="slider"></div>
 				</form>
-				
+				<input id="generateRoute" type="button" value="Generate Route">
 				<div id="routeStatus">	
 				</div>
 			</div>
