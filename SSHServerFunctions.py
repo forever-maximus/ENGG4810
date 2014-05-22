@@ -1,4 +1,5 @@
 import paramiko
+import os
 
 """ Provides methods for connecting to cloud via SSH and copying selected
 *** sensor Data to local host via SFTP.     
@@ -18,7 +19,8 @@ class DataRetriever:
         self.ssh.connect(hostname='moss.labs.eait.uq.edu.au', username='s4238289',
                     pkey=privateKey)
         print "Successfully connected.\n"
-        print "Navigate to file for download using 'cd <foldername>' and then use command 'get <filename>' to select the file for analysis\n"
+        print "Navigate to file for download using 'cd <foldername>' and then use command 'get <filename>' to select the file for analysis.\n"
+        print "Or alternatively use the command 'getHeatMap <foldername>' to pull an entire folder of data files.\n"
         self.readInput()
 
     def readInput(self):
@@ -37,9 +39,25 @@ class DataRetriever:
                 else:
                     self.currentDirectory += commands[1] + "/"
             elif (commands[0] == "get"):
-                print "Retrieving file for analysis and display"
                 sftp = self.ssh.open_sftp()
-                sftp.get(self.currentDirectory + commands[1], 'sensorData/sensorSamples.txt')
+                try:
+                    sftp.get(self.currentDirectory + commands[1], 'sensorData/sensorSamples.txt')
+                    print "Retrieving file for analysis and display"
+                    sftp.close()
+                    self.closeConnection()
+                    return
+                except:
+                    sftp.close()
+                    print "Check your spelling!\n"
+            elif (commands[0] == "getHeatMap"):
+                sftp = self.ssh.open_sftp()
+                files = sftp.listdir(self.currentDirectory + commands[1])
+                print files
+                counter = 1
+                for dataFile in files:
+                    transferedFile = "sensorData/heatmapData/heatmap%s.txt" % (counter)
+                    sftp.get(self.currentDirectory + commands[1] + "/" + dataFile, transferedFile)
+                    counter += 1
                 sftp.close()
                 self.closeConnection()
                 return
