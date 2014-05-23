@@ -1,5 +1,6 @@
 import paramiko
 import os
+import getpass
 
 """ Provides methods for connecting to cloud via SSH and copying selected
 *** sensor Data to local host via SFTP.     
@@ -7,6 +8,8 @@ import os
 class DataRetriever:
 
     ssh = 0
+    username = ""
+    password = 0
     currentDirectory = "/home/groups/engg4810g/"
 
     def __init__(self):
@@ -15,13 +18,30 @@ class DataRetriever:
     def connect(self):
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        privateKey = paramiko.RSAKey.from_private_key_file("TP2PrivateOpenSSHKey.ppk")
-        self.ssh.connect(hostname='moss.labs.eait.uq.edu.au', username='s4238289',
+        privateKey = self.generateKeys()
+        self.ssh.connect(hostname='moss.labs.eait.uq.edu.au', username=self.username,
                     pkey=privateKey)
         print "Successfully connected.\n"
         print "Navigate to file for download using 'cd <foldername>' and then use command 'get <filename>' to select the file for analysis.\n"
         print "Or alternatively use the command 'getHeatMap <foldername>' to pull an entire folder of data files.\n"
         self.readInput()
+
+    def generateKeys(self):
+        while(True):
+            self.username = raw_input("Username: ")
+            self.password = getpass.getpass("Password: ")
+            try:
+                self.ssh.connect(hostname='moss.labs.eait.uq.edu.au', username=self.username,
+                        password=self.password)
+                break
+            except:
+                print "Incorrect username or password - try again"
+        privateKey = paramiko.RSAKey.generate(1024)
+        publicKey = privateKey.get_name() + ' ' + privateKey.get_base64()
+        self.ssh.exec_command('mkdir -p ~/.ssh/')
+        self.ssh.exec_command('echo "%s" >> ~/.ssh/authorized_keys2' % publicKey)
+        self.ssh.close()
+        return privateKey
 
     def readInput(self):
         #self.testConnection()
