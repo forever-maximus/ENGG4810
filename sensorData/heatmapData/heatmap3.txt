@@ -1,0 +1,14 @@
+samples:
+    - temperature: 20
+      acceleration: [2.1, 1.2, 1.1]
+      latitude: -27.506176
+      longitude: 153.026376
+      humidity: 15
+      pressure: 85
+
+    - temperature: 24
+      acceleration: [0.1, 0.3, 0.4]
+      latitude: -27.506176
+      longitude: 153.029444
+      humidity: 18
+      pressure: 87

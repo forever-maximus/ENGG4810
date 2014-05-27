@@ -1,4 +1,3 @@
-import os
 from SSHServerFunctions import *
 from yamlParser import *
 
@@ -486,9 +485,16 @@ def main():
 
     dataRetriever = DataRetriever()
 
-    sensorDataReference = SensorDataManager()
-    sensorDataReference.gatherData()
-    sensorDataReference.displayData()
+    sensorDataReference = 0
+    if dataRetriever.heatmap == True:
+        sensorDataReference = SensorDataManager(dataRetriever.fileList)
+    else:
+        sensorDataReference = SensorDataManager()
+        sensorDataReference.gatherData()
+        sensorDataReference.displayData()
+
+    while(1):
+        pass
 
     getItDone = JavascriptGenerator(sensorDataReference.sensorValues)
     getItDone.generate()

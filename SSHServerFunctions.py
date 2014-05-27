@@ -8,6 +8,8 @@ import getpass
 class DataRetriever:
 
     ssh = 0
+    heatmap = False
+    fileList = []
     username = ""
     password = 0
     currentDirectory = "/home/groups/engg4810g/"
@@ -18,6 +20,10 @@ class DataRetriever:
     def connect(self):
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+##        self.username = raw_input("Username: ")
+##        self.password = getpass.getpass("Password: ")
+##        self.ssh.connect(hostname='moss.labs.eait.uq.edu.au', username=self.username,
+##                        password=self.password)
         privateKey = self.generateKeys()
         self.ssh.connect(hostname='moss.labs.eait.uq.edu.au', username=self.username,
                     pkey=privateKey)
@@ -71,15 +77,18 @@ class DataRetriever:
                     print "Check your spelling!\n"
             elif (commands[0] == "getHeatMap"):
                 sftp = self.ssh.open_sftp()
-                files = sftp.listdir(self.currentDirectory + commands[1])
-                print files
+                stdin, stdout, stderr = self.ssh.exec_command("find " + self.currentDirectory +
+                                                              commands[1] + "/ -type f")
+                output = stdout.readlines()
                 counter = 1
-                for dataFile in files:
+                for dataFile in output:
                     transferedFile = "sensorData/heatmapData/heatmap%s.txt" % (counter)
-                    sftp.get(self.currentDirectory + commands[1] + "/" + dataFile, transferedFile)
+                    sftp.get(dataFile.rstrip('\n'), transferedFile)
+                    self.fileList.append(transferedFile)
                     counter += 1
                 sftp.close()
                 self.closeConnection()
+                self.heatmap = True
                 return
             else:
                 print "'" + commands[0] + "' is not a valid command!"
