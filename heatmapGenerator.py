@@ -14,6 +14,14 @@ class HeatMapGenerator:
 		
 	heatMapJS = self._initializeMap()
 	heatMapJS += self._addSliderJS()
+	heatMapJS += self._startHeatMapping()
+
+        for sample in self.sensorValues:
+            if 'latitude' in sample and 'longitude' in sample:
+                heatMapJS += self._addPointToHeatmap(sample)
+            pass
+
+	heatMapJS += self._endHeatMapping()
 
 	newJsFile.write(heatMapJS)
 	newJsFile.close()
@@ -72,9 +80,44 @@ $(function () {
     """
         return sliderJS
 
+    def _startHeatMapping(self):
 
+        startHeatmapJS = """
+$(function() {
+    $("#generateHeatMap").click(function() {
 
+        var minTemp = $("#minTemp").val();
+        var maxTemp = $("#maxTemp").val();
+        var maxAccel = $("#maxAccel").val();
+        var heatmapData = [];
+        var point;
+    
+    """
+        return startHeatmapJS
 
+    def _addPointToHeatmap(self, sample):
+
+        newPointJS = """
+        point = {
+            location: new google.maps.LatLng(%s, %s),
+            weight: %s
+        };
+        heatmapData.push(point);
+    """ % (sample['latitude'], sample['longitude'], 1)
+
+        return newPointJS
+
+    def _endHeatMapping(self):
+
+        endHeatmapJS = """
+        var heatmap = new google.maps.visualization.HeatmapLayer({
+            data: heatmapData
+        });
+        heatmap.setMap(map);
+    });
+});
+    """
+        return endHeatmapJS
 
 
 

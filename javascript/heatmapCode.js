@@ -41,3 +41,74 @@ $(function () {
     });
 });
     
+$(function() {
+    $("#generateHeatMap").click(function() {
+
+        var minTemp = $("#minTemp").val();
+        var maxTemp = $("#maxTemp").val();
+        var maxAccel = $("#maxAccel").val();
+        var heatmapData = [];
+        var point;
+    
+    
+        point = {
+            location: new google.maps.LatLng(-27.504328, 153.025498),
+            weight: 1
+        };
+        heatmapData.push(point);
+    
+        point = {
+            location: new google.maps.LatLng(-27.500369, 153.026485),
+            weight: 1
+        };
+        heatmapData.push(point);
+    
+        point = {
+            location: new google.maps.LatLng(-27.502196, 153.030047),
+            weight: 1
+        };
+        heatmapData.push(point);
+    
+        point = {
+            location: new google.maps.LatLng(-27.507068, 153.032622),
+            weight: 1
+        };
+        heatmapData.push(point);
+    
+        point = {
+            location: new google.maps.LatLng(-27.504176, 153.034167),
+            weight: 1
+        };
+        heatmapData.push(point);
+    
+        point = {
+            location: new google.maps.LatLng(-27.497315, 153.035109),
+            weight: 1
+        };
+        heatmapData.push(point);
+    
+        point = {
+            location: new google.maps.LatLng(-27.493915, 153.034445),
+            weight: 1
+        };
+        heatmapData.push(point);
+    
+        point = {
+            location: new google.maps.LatLng(-27.506176, 153.026376),
+            weight: 1
+        };
+        heatmapData.push(point);
+    
+        point = {
+            location: new google.maps.LatLng(-27.506176, 153.029444),
+            weight: 1
+        };
+        heatmapData.push(point);
+    
+        var heatmap = new google.maps.visualization.HeatmapLayer({
+            data: heatmapData
+        });
+        heatmap.setMap(map);
+    });
+});
+    
