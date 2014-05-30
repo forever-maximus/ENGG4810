@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>ENGG4810 initial test</title>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHTSKMqr_k_Dpg4jir1JJfX0bGMfzSCGs&sensor=false"></script>
+		<script src="javascript/jquery-1.7.2.min.js"></script>
+		<script src="javascript/jquery-ui-1.10.4.custom/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js"></script>
+		<script type="text/javascript" src="javascript/heatmap.js-master/src/heatmap.js"></script>
+		<script type="text/javascript" src="javascript/heatmap.js-master/src/heatmap-gmaps.js"></script>
+		<script type="text/javascript" src="javascript/heatmapCode.js"></script>
+		<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+		<link href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css' rel='stylesheet' type='text/css'>
+		<link href="bootstrap-3.1.1-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<style type="text/css">
+			html { height: 100% }
+			body { height: 100%; margin: 0; padding: 0 }
+			#mapCanvas { height: 100%; width: 70%; float: left }
+			#menu { height: 100%; width: 30%; float: right }
+			h1 { margin: 0; font-family: 'Open Sans', sans-serif; font-size: 40px; padding-bottom: 10px; color: #444444; text-align: center }
+			p { font-family: 'Open Sans', sans-serif; font-size: 14px; color: #444444 }
+			form { font-family: 'Open Sans', sans-serif; font-size: 14px; margin: 10px 0px 20px 0px}
+			#content { margin: 20px; font-family: 'Open Sans', sans-serif}
+			.slider {margin: 20px 0px 0px 0px}
+			input {max-width: 100%}
+		</style>
+	</head>
+	
+	<body>
+		<div id="mapCanvas"></div>
+		<div id="menu">
+			<div id="content">
+				<div id="header">
+					<h1>ENGG4810 TP2</h1>
+				</div>
+				<p>Welcome to the portable logger heatmap display software.</p>
+				
+				<form class="form form-horizontal well" role="form">
+				
+					<div class="form-group" id="minTempContainer">
+						<label for="minTemp" class="col-sm-4 control-label">Min-Temp:</label>
+						<div class="col-sm-8">
+							<input id="minTemp" type="text" name="minTemp" class="form-control">
+						</div>
+					</div>
+					<div class="form-group" id="maxTempContainer">
+						<label for="maxTemp" class="col-sm-4 control-label">Max-Temp:</label>
+						<div class="col-sm-8">
+							<input id="maxTemp" type="text" name="maxTemp" class="form-control">
+						</div>
+					</div>
+					<div id="tempSlider" class="slider"></div><br>
+					
+					<div class="form-group" id="maxAccelContainer">
+						<label for="maxAccel" class="col-sm-4 control-label">Max-Accel:</label>
+						<div class="col-sm-8">
+							<input id="maxAccel" type="text" name="maxAccel" class="form-control">
+						</div>
+					</div>
+					<div id="accelSlider" class="slider"></div><br>
+					
+					<div class="form-group">
+						<div class="col-sm-offset-4 col-sm-8">
+							<input id="generateHeatMap" type="button" value="Generate Heat Map" class="btn btn-default">
+						</div>
+					</div>
+				</form>
+				
+			</div>
+		</div>
+	</body>
+	
+</html>
