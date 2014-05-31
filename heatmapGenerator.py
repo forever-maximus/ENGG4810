@@ -31,7 +31,8 @@ class HeatMapGenerator:
 
         initialMapJS = """
 var map = null;
-var dataArray = [];
+var heatmap = null;
+var grid = [];
 
 function initializeMap() {
 
@@ -86,11 +87,38 @@ $(function () {
 $(function() {
     $("#generateHeatMap").click(function() {
 
-        var minTemp = $("#minTemp").val();
-        var maxTemp = $("#maxTemp").val();
+        if (heatmap != null) {
+            heatmap.setMap(null);
+        }
+
+        var bounds = map.getBounds();
+        var southWest = bounds.getSouthWest();
+        var northEast = bounds.getNorthEast();
+        var tileWidth = (northEast.lat() - southWest.lat())/100;
+        var tileHeight = (northEast.lng() - southWest.lng())/100;
+
+        for (i=0; i<100; i++) {
+            for (j=0; j<100; j++) {
+                var swLat = southWest.lat() + (tileWidth*i);
+                var swLng = southWest.lng() + (tileHeight*j);
+                var neLat = swLat + tileWidth;
+                var neLng = swLng + tileHeight;
+
+                var sensorCell = new google.maps.LatLngBounds(new google.maps.LatLng(swLat, swLng),
+                        new google.maps.LatLng(neLat, neLng));
+                grid.push(sensorCell);         
+            }
+        }
+        
+        var minTemp = parseInt($("#minTemp").val());
+        var maxTemp = parseInt($("#maxTemp").val());
+        var midTemp = (minTemp+maxTemp)/2;
+        var upperTempRange = maxTemp - midTemp;
+        var lowerTempRange = midTemp - minTemp;
         var maxAccel = $("#maxAccel").val();
         var heatmapData = [];
         var point;
+        var intensity = 1;
     
     """
         return startHeatmapJS
@@ -98,20 +126,62 @@ $(function() {
     def _addPointToHeatmap(self, sample):
 
         newPointJS = """
+        if (%s > midTemp) {
+            intensity = ((%s - midTemp)/upperTempRange)*100;
+        } else if (%s == midTemp) {
+            intensity = 1;
+        } else {
+            intensity = ((midTemp - %s)/lowerTempRange)*100;
+        }
+        """ % (sample['temperature'], sample['temperature'],
+               sample['temperature'], sample['temperature'])
+        
+        newPointJS += """
         point = {
             location: new google.maps.LatLng(%s, %s),
-            weight: %s
+            weight: intensity
         };
         heatmapData.push(point);
-    """ % (sample['latitude'], sample['longitude'], 1)
+    """ % (sample['latitude'], sample['longitude'])
 
         return newPointJS
 
     def _endHeatMapping(self):
 
         endHeatmapJS = """
-        var heatmap = new google.maps.visualization.HeatmapLayer({
-            data: heatmapData
+        var finalData = [];
+        for (i=0; i<grid.length; i++) {
+            var smallest = 1000;
+            var temp = [];
+            for (j=0; j<heatmapData.length; j++) {
+                if (grid[i].contains(heatmapData[j].location)) {
+                    temp.push(heatmapData[j]);
+                }
+            }
+            if (temp.length == 0) {
+                point = {
+                    location: grid[i].getCenter(),
+                    weigth: 1
+                };
+                finalData.push(point);
+            } else {
+                for (k=0; k<temp.length; k++) {
+                    if (temp[k].weight < smallest) {
+                        smallest = temp[k].weight;
+                    }
+                }
+                point = {
+                    location: grid[i].getCenter(),
+                    weight: smallest
+                };
+                finalData.push(point);
+            }
+        }
+
+        heatmap = new google.maps.visualization.HeatmapLayer({
+            data: finalData,
+            maxIntensity: 100,
+            radius: 30
         });
         heatmap.setMap(map);
     });
