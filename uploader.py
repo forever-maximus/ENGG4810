@@ -27,6 +27,7 @@ class UploadData:
                 self.yamlData += "      acceleration: [" + str(float(line[4])/25) + ", " + str(float(line[5])/25) + ", " + str(float(line[6])/25) + "]\n"
                 self.yamlData += "      pressure: " + line[7] + "\n"
                 self.yamlData += "      humidity: " + line[8] + "\n"
+                
                 if line[2] != "" and line[3] != "":
                     tmp = float(line[2][0:2]) + float(line[2][2:])/60
                     self.yamlData += "      latitude: " + str(tmp) + "\n"
@@ -34,6 +35,9 @@ class UploadData:
                     tmp = line[3].split('.')
                     tmp = float(tmp[0][:-2]) + float(tmp[0][-2:] + '.' + tmp[1])/60
                     self.yamlData += "      longitude: " + str(tmp) + "\n"
+                if line[0] != "" and line[1] != "":
+                    self.yamlData += "      time: " + '20' + line[0][4:] + '-' + line[0][2:4] + '-' + line[0][:2] + 'T' + line[1][:2] + ':' + line[1][2:4] + ':' + line[1][4:] + '+10:00' + "\n"
+                
                 self.yamlData += '\n'
         print self.yamlData
 
