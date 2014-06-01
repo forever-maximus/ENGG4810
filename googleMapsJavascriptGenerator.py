@@ -1,5 +1,6 @@
 from SSHServerFunctions import *
 from yamlParser import *
+from heatmapGenerator import *
 
 """ Class which controls the generation of the javascript for the software depending
 *** on the values from the sensor data file
@@ -15,11 +16,21 @@ class JavascriptGenerator:
 
         newJsFile = open('javascript/googleMapsCode.js', 'w')
 
-        IAmTheBatmanJS = self._initializeMap()      
+        initMapSample = 0
+        for sample in self.sensorValues:
+            if 'latitude' in sample and 'longitude' in sample:
+                initMapSample = sample
+                break
+            pass
+        
+        if initMapSample == 0:
+            initMapSample = {'latitude':-27.504328, 'longitude':153.025498}
+        
+        IAmTheBatmanJS = self._initializeMap(initMapSample)      
         IAmTheBatmanJS += self._generateDropDown()      
         IAmTheBatmanJS += self._addSliderJS()
         
-        IAmTheBatmanJS += self._startMapRouting()
+        IAmTheBatmanJS += self._startMapRouting(initMapSample)
 
         counter = 0
         previous = {}
@@ -30,7 +41,11 @@ class JavascriptGenerator:
                 counter += 1
                 continue
             else:
-                if 'latitude' in sample and 'longitude' in sample:
+                if 'latitude' not in previous and 'longitude' not in previous:
+                    previous = sample
+                    counter += 1
+                    continue
+                elif 'latitude' in sample and 'longitude' in sample:
                     
                     IAmTheBatmanJS += self._addTempSensorMapping(counter, sample)
                     IAmTheBatmanJS += self._addAccelSensorMapping(counter, sample)
@@ -50,13 +65,13 @@ class JavascriptGenerator:
        
                 counter += 1
 
-        IAmTheBatmanJS += self._endMapRouting()
+        IAmTheBatmanJS += self._endMapRouting(previous)
         
         newJsFile.write(IAmTheBatmanJS)
         newJsFile.close()
 
     ## Initializes the Google map object and arrays for map objects
-    def _initializeMap(self):
+    def _initializeMap(self, initMapSample):
 
         initialMapJS = """
 var map = null;
@@ -83,7 +98,7 @@ google.maps.event.addDomListener(window, 'load', initializeMap);
 var enableButton = function () {
     $("#generateRoute").removeAttr("disabled");
 }
-        """ % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
+        """ % (initMapSample['latitude'], initMapSample['longitude'])
 
         return initialMapJS
 
@@ -165,8 +180,8 @@ $(function () {
     $("#accelSlider").slider({
         range: "min",
         step: 0.5,
-        value: 0.0,
-        min: -10.0,
+        value: 1.0,
+        min: 0.0,
         max: 10.0,
         slide: function(event, ui) {
             $("#maxThreshold").val(ui.value);
@@ -178,7 +193,7 @@ $(function () {
         return sliderJS
 
 
-    def _startMapRouting(self):
+    def _startMapRouting(self, initMapSample):
 
         startMapping = """
 
@@ -211,13 +226,15 @@ $(function () {
             strokeColor: '#444444',
             strokeOpacity: 0.5
         };
-        """ % (self.sensorValues[0]['latitude'], self.sensorValues[0]['longitude'])
+        """ % (initMapSample['latitude'], initMapSample['longitude'])
 	
         return startMapping
 
 
     def _addTempSensorMapping(self, counter, sample):
 
+        time = self._getTimeDate(sample)
+        
         tempSensorJS = """
         var route%s;
         if (currentSensor == "temperature") {
@@ -248,15 +265,18 @@ $(function () {
                 infoWindow.innerHTML = "";
                 infoWindow.innerHTML = "<b>Route Segment Values: </b><br>"
                 infoWindow.innerHTML += "latitude = %s <br>longitude = %s" +
-                        "<br>temperature = %s";
+                        "<br>temperature = %s <br>time = %s <br>date = %s";
             });
         }
-        """ % (counter, sample['latitude'], sample['longitude'], sample['temperature'])
+        """ % (counter, sample['latitude'], sample['longitude'],
+               sample['temperature'], time[1], time[0])
 
         return tempSensorJS
 
 
     def _addAccelSensorMapping(self, counter, sample):
+
+        time = self._getTimeDate(sample)
 
         accelSensorJS = """
         else if (currentSensor == "acceleration") {
@@ -278,8 +298,9 @@ $(function () {
                 });
                 errorCounter += 1;
             }
-        """ % (sample['acceleration'][0], sample['acceleration'][1],
-                sample['acceleration'][2], counter, counter)
+        """ % (str(abs(float(sample['acceleration'][0]))),
+                       str(abs(float(sample['acceleration'][1]))),
+                str(abs(float(sample['acceleration'][2]))), counter, counter)
 
         accelSensorJS += """
             google.maps.event.addListener(route%s, 'mouseover', function() {
@@ -287,17 +308,19 @@ $(function () {
                 infoWindow.innerHTML = "";
                 infoWindow.innerHTML = "<b>Route Segment Values: </b><br>"
                 infoWindow.innerHTML += "latitude = %s <br>longitude = %s" +
-                        "<br>acceleration = [%s, %s, %s]";
+                        "<br>acceleration = [%s, %s, %s] <br>time = %s <br>date = %s";
             });
         }
         """ % (counter, sample['latitude'], sample['longitude'],
                sample['acceleration'][0],sample['acceleration'][1],
-               sample['acceleration'][2])
+               sample['acceleration'][2], time[1], time[0])
 
         return accelSensorJS
 
 
     def _addHumiditySensorMapping(self, counter, sample):
+
+        time = self._getTimeDate(sample)
 
         humiditySensorJS = """
         else if (currentSensor == "humidity") {
@@ -327,15 +350,18 @@ $(function () {
                 infoWindow.innerHTML = "";
                 infoWindow.innerHTML = "<b>Route Segment Values: </b><br>"
                 infoWindow.innerHTML += "latitude = %s <br>longitude = %s" +
-                        "<br>humidity = %s";
+                        "<br>humidity = %s <br>time = %s <br>date = %s";
             });
         }
-        """ % (counter, sample['latitude'], sample['longitude'], sample['humidity'])
+        """ % (counter, sample['latitude'], sample['longitude'],
+               sample['humidity'], time[1], time[0])
 
         return humiditySensorJS
     
 
     def _addPressureSensorMapping(self, counter, sample):
+
+        time = self._getTimeDate(sample)
 
         pressureSensorJS = """
         else if (currentSensor == "pressure") {
@@ -365,15 +391,18 @@ $(function () {
                 infoWindow.innerHTML = "";
                 infoWindow.innerHTML = "<b>Route Segment Values: </b><br>"
                 infoWindow.innerHTML += "latitude = %s <br>longitude = %s" +
-                        "<br>pressure = %s";
+                        "<br>pressure = %s <br>time = %s <br>date = %s";
             });
         }
-        """ % (counter, sample['latitude'], sample['longitude'], sample['pressure'])
+        """ % (counter, sample['latitude'], sample['longitude'],
+               sample['pressure'], time[1], time[0])
 
         return pressureSensorJS
     
 
     def _callGoogleDirections(self, counter, sample, previous):
+
+        time = self._getTimeDate(sample)
 
         googleDirections = """
 
@@ -404,7 +433,7 @@ $(function () {
         return googleDirections
 
 
-    def _endMapRouting(self):
+    def _endMapRouting(self, previous):
 
         finishMapping = """
 
@@ -435,8 +464,7 @@ $(function () {
 
     });
 });
-        """ % (self.sensorValues[len(self.sensorValues)-1]['latitude'],
-               self.sensorValues[len(self.sensorValues)-1]['longitude'])
+        """ % (previous['latitude'], previous['longitude'])
 
         return finishMapping
     
@@ -450,8 +478,6 @@ $(function () {
             }
         }
         """ % (sample['temperature'], sample['temperature'])
-
-        print sample['acceleration'][2]
 
         noRouteJS += """
         else if (currentSensor == "acceleration") {
@@ -480,6 +506,16 @@ $(function () {
 
         return noRouteJS
 
+    def _getTimeDate(self, sample):
+
+        time = ['Not available', 'Not available']
+        
+        if 'time' in sample:
+            tmp = str(sample['time']).split()
+            time[0] = tmp[0]
+            time[1] = tmp[1]
+
+        return time
 
 def main():
 
@@ -488,18 +524,22 @@ def main():
     sensorDataReference = 0
     if dataRetriever.heatmap == True:
         sensorDataReference = SensorDataManager(dataRetriever.fileList)
+        sensorDataReference.heatMapData()
+        
+        heatmap = HeatMapGenerator(sensorDataReference.sensorValues)
+        heatmap.genHeatMap()
+
+        os.startfile('heatmap.html')
+        
     else:
-        sensorDataReference = SensorDataManager()
+        sensorDataReference = SensorDataManager(None)
         sensorDataReference.gatherData()
-        sensorDataReference.displayData()
+        #sensorDataReference.displayData()
 
-    while(1):
-        pass
+        getItDone = JavascriptGenerator(sensorDataReference.sensorValues)
+        getItDone.generate()
 
-    getItDone = JavascriptGenerator(sensorDataReference.sensorValues)
-    getItDone.generate()
-
-    os.startfile('initialMap.html')
+        os.startfile('initialMap.html')
     
 
 if __name__ == "__main__":
